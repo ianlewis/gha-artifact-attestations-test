@@ -39,6 +39,10 @@ jobs:
           version: 0.64.1
       - run: |
           echo "malicious: $(date)" > my-artifact
+      - uses: actions/upload-artifact@v4
+        with:
+          name: "my-artifact"
+          path: "my-artifact"
       - name: Attest Build Provenance
         uses: ianlewis/attest-build-provenance@main
         with:
