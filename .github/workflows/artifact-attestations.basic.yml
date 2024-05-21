@@ -38,7 +38,7 @@ jobs:
         with:
           version: 0.64.1
       - run: |
-          tar czf my-artifact.tar.gz LICENSE.md
+          tar czf my-artifact.tar.gz LICENSE
       - name: Attest Build Provenance
         uses: actions/attest-build-provenance@897ed5eab6ed058a474202017ada7f40bfa52940 # v1.0.0
         with:
