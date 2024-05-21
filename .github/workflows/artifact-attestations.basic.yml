@@ -45,8 +45,15 @@ jobs:
           subject-path: "my-artifact.tar.gz"
       - name: Verify Build Provenance
         run: |
-          [ "$(gh attestation verify --repo ianlewis/gha-artifact-attestations-test --format json my-artifact.tar.gz | \
-            opa eval --stdin-input -f raw -d policy.rego "data.attestation.slsa1.allow == true")" == "true" ]
+          result="$(gh attestation verify --repo ianlewis/gha-artifact-attestations-test --format json my-artifact.tar.gz)"
+          if [ "${ACTIONS_RUNNER_DEBUG}" == "true" ]; then
+            echo "${result}"
+          fi
+          opa_result="$(echo "${result}" | opa eval --stdin-input -f raw -d policy.rego "data.attestation.slsa1.allow == true")"
+          if [ "${ACTIONS_RUNNER_DEBUG}" == "true" ]; then
+            echo "opa result: ${opa_result}"
+          fi
+          [ "${opa_result}" == "true" ]
 
   malicious:
     runs-on: ubuntu-latest
@@ -68,5 +75,12 @@ jobs:
           subject-path: "my-artifact.tar.gz"
       - name: Verify Build Provenance
         run: |
-          [ "$(gh attestation verify --repo ianlewis/gha-artifact-attestations-test --format json my-artifact.tar.gz | \
-            opa eval --stdin-input -f raw -d policy.rego "data.attestation.slsa1.allow == true")" == "true" ]
+          result="$(gh attestation verify --repo ianlewis/gha-artifact-attestations-test --format json my-artifact.tar.gz)"
+          if [ "${ACTIONS_RUNNER_DEBUG}" == "true" ]; then
+            echo "${result}"
+          fi
+          opa_result="$(echo "${result}" | opa eval --stdin-input -f raw -d policy.rego "data.attestation.slsa1.allow == true")"
+          if [ "${ACTIONS_RUNNER_DEBUG}" == "true" ]; then
+            echo "opa result: ${opa_result}"
+          fi
+          [ "${opa_result}" == "true" ]
