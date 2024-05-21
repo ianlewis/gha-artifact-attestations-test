@@ -44,6 +44,8 @@ jobs:
         with:
           subject-path: "my-artifact.tar.gz"
       - name: Verify Build Provenance
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           result="$(gh attestation verify --repo ianlewis/gha-artifact-attestations-test --format json my-artifact.tar.gz)"
           if [ "${ACTIONS_RUNNER_DEBUG}" == "true" ]; then
@@ -74,6 +76,8 @@ jobs:
         with:
           subject-path: "my-artifact.tar.gz"
       - name: Verify Build Provenance
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           result="$(gh attestation verify --repo ianlewis/gha-artifact-attestations-test --format json my-artifact.tar.gz)"
           if [ "${ACTIONS_RUNNER_DEBUG}" == "true" ]; then
