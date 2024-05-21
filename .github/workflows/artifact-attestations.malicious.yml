@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-name: Test Artifact Attestations
+name: Test Artifact Attestations (malicious)
 
 on:
   push:
@@ -25,7 +25,7 @@ on:
 permissions: {}
 
 jobs:
-  build:
+  malicious:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -38,9 +38,9 @@ jobs:
         with:
           version: 0.64.1
       - run: |
-          echo "basic: $(date)" > my-artifact
+          echo "malicious: $(date)" > my-artifact
       - name: Attest Build Provenance
-        uses: actions/attest-build-provenance@897ed5eab6ed058a474202017ada7f40bfa52940 # v1.0.0
+        uses: ianlewis/attest-build-provenance@main
         with:
           subject-path: "my-artifact"
       - name: Verify Build Provenance
@@ -51,4 +51,4 @@ jobs:
           echo "${result}" | jq '.[0].verificationResult.statement'
           opa_result="$(echo "${result}" | opa eval --stdin-input -f raw -d policy.rego "data.attestation.slsa1.allow == true")"
           echo "opa result: ${opa_result}"
-          [ "${opa_result}" == "true" ] || (echo "OPA policy should succeed!" && exit 1)
+          [ "${opa_result}" != "true" ] || (echo "OPA policy should fail!" && exit 1)

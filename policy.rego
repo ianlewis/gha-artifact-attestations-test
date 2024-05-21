@@ -9,6 +9,8 @@ approved_repos := [
     "https://github.com/ianlewis/gha-artifact-attestations-test",
 ]
 
+approved_workflow = ".github/workflows/artifact-attestations.basic.yml"
+
 # Fail closed
 default allow := false
 
@@ -22,4 +24,8 @@ allow {
     repo := input[i].verificationResult.statement.predicate.buildDefinition.externalParameters.workflow.repository
 
     repo == approved_repos[_]
+
+    workflow_path := input[i].verificationResult.statement.predicate.buildDefinition.externalParameters.workflow.path
+
+    workflow_path == approved_workflow
 }
