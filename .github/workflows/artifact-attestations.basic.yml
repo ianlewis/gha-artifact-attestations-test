@@ -45,5 +45,28 @@ jobs:
           subject-path: "my-artifact.tar.gz"
       - name: Verify Build Provenance
         run: |
-          gh attestation verify --repo ianlewis/gha-artifact-attestations-test --format json my-artifact.tar.gz | \
-            opa eval --stdin-input -f raw -d policy.rego "data.attestation.slsa1.allow == true"
+          [ "$(gh attestation verify --repo ianlewis/gha-artifact-attestations-test --format json my-artifact.tar.gz | \
+            opa eval --stdin-input -f raw -d policy.rego "data.attestation.slsa1.allow == true")" == "true" ]
+
+  malicious:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      attestations: write
+      contents: read
+    steps:
+      - uses: actions/checkout@44c2b7a8a4ea60a981eaca3cf939b5f4305c123b # v4.1.5
+      - name: Setup OPA
+        uses: open-policy-agent/setup-opa@34a30e8a924d1b03ce2cf7abe97250bbb1f332b5 # v2.2.1
+        with:
+          version: 0.64.1
+      - run: |
+          tar czf my-artifact.tar.gz LICENSE
+      - name: Attest Build Provenance
+        uses: ianlewis/attest-build-provenance@main
+        with:
+          subject-path: "my-artifact.tar.gz"
+      - name: Verify Build Provenance
+        run: |
+          [ "$(gh attestation verify --repo ianlewis/gha-artifact-attestations-test --format json my-artifact.tar.gz | \
+            opa eval --stdin-input -f raw -d policy.rego "data.attestation.slsa1.allow == true")" == "true" ]

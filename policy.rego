@@ -5,8 +5,8 @@ package attestation.slsa1
 import future.keywords.if
 
 approved_repos := [
-    "https://github.com/sigstore/sigstore-js",
-    "https://github.com/github/example",
+    # "https://github.com/sigstore/sigstore-js",
+    "https://github.com/ianlewis/gha-artifact-attestations-test",
 ]
 
 # Fail closed
