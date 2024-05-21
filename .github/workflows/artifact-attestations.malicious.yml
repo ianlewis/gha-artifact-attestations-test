@@ -48,7 +48,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           result="$(gh attestation verify --repo ianlewis/gha-artifact-attestations-test --format json my-artifact)"
-          echo "${result}" | jq '.[0].verificationResult.statement'
+          echo "${result}" | jq
           opa_result="$(echo "${result}" | opa eval --stdin-input -f raw -d policy.rego "data.attestation.slsa1.allow == true")"
           echo "opa result: ${opa_result}"
           [ "${opa_result}" != "true" ] || (echo "OPA policy should fail!" && exit 1)
